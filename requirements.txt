@@ -1,0 +1,8 @@
+install the pip :-
+
+flask
+requests
+beautifulsoup4
+trafilatura
+transformers
+torch
