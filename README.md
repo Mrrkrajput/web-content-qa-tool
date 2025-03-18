@@ -10,5 +10,5 @@ A simple web-based tool to ingest content from URLs and answer questions based s
 ## Installation
 1. Clone this repository:
    ```bash
-   git clone <repository-url>
-   cd <repository-folder>
+   git clone <https://github.com/Mrrkrajput/web-content-qa-tool>
+   cd <Web Content Q&A Tool>
