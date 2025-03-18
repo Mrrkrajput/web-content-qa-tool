@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Content Q&A Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        textarea, input { margin-bottom: 10px; }
+        button { padding: 5px 10px; margin-right: 10px; }
+        #answer { margin-top: 10px; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Web Content Q&A Tool</h1>
+    <label for="urls">Enter URLs (one per line):</label><br>
+    <textarea id="urls" rows="5" cols="50" placeholder="e.g., https://en.wikipedia.org/wiki/Python_(programming_language)"></textarea><br>
+    <button onclick="ingestContent()">Ingest Content</button><br><br>
+    <label for="question">Ask a question:</label><br>
+    <input type="text" id="question" size="50" placeholder="e.g., What is Python?"><br>
+    <button onclick="askQuestion()">Ask Question</button><br><br>
+    <h2>Answer:</h2>
+    <div id="answer"></div>
+
+    <script>
+        async function ingestContent() {
+            const urls = document.getElementById('urls').value.split('\n').filter(url => url.trim() !== '');
+            if (urls.length === 0) {
+                alert("Please enter at least one URL.");
+                return;
+            }
+            document.getElementById('answer').innerText = "Ingesting content...";
+            try {
+                const response = await fetch('/ingest', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({urls})
+                });
+                const data = await response.json();
+                document.getElementById('answer').innerText = "";
+                alert(data.status);
+            } catch (error) {
+                document.getElementById('answer').innerText = "Error ingesting content.";
+            }
+        }
+
+        async function askQuestion() {
+            const question = document.getElementById('question').value.trim();
+            if (!question) {
+                alert("Please enter a question.");
+                return;
+            }
+            document.getElementById('answer').innerText = "Processing...";
+            try {
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({question})
+                });
+                const data = await response.json();
+                document.getElementById('answer').innerText = data.error || data.answer;
+            } catch (error) {
+                document.getElementById('answer').innerText = "Error retrieving answer.";
+            }
+        }
+    </script>
+</body>
+</html>
